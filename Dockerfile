@@ -4,12 +4,23 @@ FROM golang:1.20-alpine as builder
 # Install ssh client and git
 RUN apk add --no-cache openssh-client git
 
+# Download public key for github.com
+RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+
 # Set the work directory.
 WORKDIR /app
 
 # Copy go mod and sum files.
 COPY go.mod ./
 COPY go.sum ./
+
+# Install the dependencies.
+RUN git config --global --add url."ssh://git@github.com/".insteadOf "https://github.com/"
+RUN export GOPRIVATE=github.com/resource-aware-jds/common-go
+# This command will have access to the forwarded agent (if one is
+# available)
+RUN --mount=type=ssh go mod download
 
 # Copy the source code into the container.
 COPY ./ ./
