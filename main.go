@@ -33,11 +33,11 @@ func main() {
 		jobID = int32(i)
 	}
 
-	totalJob := 100
+	totalJob := 10
 
 	for i := 1; i < totalJob; i++ {
 		fmt.Println("Current: ", i)
-		computeNodeClient.ReportJob(ctx, &proto.ReportJobRequest{JobID: jobID, TotalJob: int64(totalJob), CurrentJob: int64(i)})
+		computeNodeClient.ReportJob(ctx, &proto.ReportJobRequest{JobID: jobID, TotalJob: int64(totalJob), CurrentJob: int64(i + 1)})
 		time.Sleep(1 * time.Second)
 	}
 }
